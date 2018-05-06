@@ -1,0 +1,87 @@
+{% extends "main.html" %}
+{% block content %}
+	<div class="row divider green">
+		<div class="col-md-12"></div>
+	</div>
+	<div class="row banner book">
+		<div class="col-md-10 col-md-offset-1 padding-none">
+            <h1>Search for a new book</h1>
+		</div>
+		<div class="col-md-2 text-right">
+                {% if not name %}
+                <a href="{{url_for('showLogin')}}">Click Here to Log in </a>
+                {% endif %}
+                {% if name %}
+                <figure class="creator">
+                    <img class="creator_img" src="{{ picture }}">
+                    <figcaption>{{ name }} <a href="{{url_for('gdisconnect')}}">Logout</a></figcaption>
+                </figure>
+                {% endif %}
+		</div>
+    </div>
+        
+	<div class="row padding-top padding-bottom">
+		<div class="col-md-1"></div>
+		<div class="col-md-11 padding-none">
+            <form class="form-inline my-2 my-lg-0" action="{{ url_for('searchResults')}}">
+            <label for="search">Book Title or ISBN:</label><br>
+            <input class="form-control mr-sm-2" type="search" id="search" name="search" value="{{ entry }}" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search for Book</button>
+		</div>
+		<div class="col-md-7"></div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			{% with messages = get_flashed_messages() %}
+				{% if messages %}
+					<ul>
+						{% for message in messages %}
+							 <li> <strong> {{ message }} </strong> </li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			{% endwith %}
+		</div>
+	</div>
+	{% if books !=[] %}	
+    <div class="row">
+			<div class="col-md-10 row">
+				<div class="col-md-8"><h2>Titles</h2></div>
+				<div class="col-md-2"><h3>Cover</h3></div>
+					{% for book in books %}
+							<div class="book-item col-md-7">
+								<h4>{{book['volumeInfo']['title']}}
+                                    {% if 'subtitle' in book['volumeInfo'] %}
+                                    : {{ book['volumeInfo']['subtitle'] }}
+                                    {% endif %}
+                                </h4>
+                                <a class="btn btn-primary" href="{{ url_for('newBook', google_id=book['id']) }}" role="button">
+                                        {% if not name %}
+                                        Preview Book
+                                        {% endif %}
+                                        {% if name %}
+                                        Add Book
+                                        {% endif %}
+                                </a>
+							</div>
+							<div class="book-item col-md-1"></div>
+							<div class="book-item col-md-2">
+                                {% if 'imageLinks' in book['volumeInfo'] and 'thumbnail' in book['volumeInfo']['imageLinks'] %}
+                                <img class="creator_img" src="{{book['volumeInfo']['imageLinks']['thumbnail']}}">
+                                {% else %}
+                                <h6>No Cover Available</h6>
+                                {% endif %}
+							</div>
+					{% endfor %}
+			</div>
+    </div>
+    {% else %}
+    <div>
+        <div class="col-md-10 row">
+            {% if entry !='' %}
+            <h4>No Books were found using the search criteria. Change your search entry and try again.</h4>
+            {% endif %}
+        </div>
+    </div>
+	{% endif %}
+{% endblock %}

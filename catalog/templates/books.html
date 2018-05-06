@@ -1,0 +1,75 @@
+{% extends "main.html" %}
+{% block content %}
+	<div class="row divider green">
+		<div class="col-md-12"></div>
+	</div>
+	<div class="row banner book">
+		<div class="col-md-10 col-md-offset-1 padding-none">
+            <h1>{{ category.name }} Books</h1>
+            {% if category.user_id == user %}
+            <a href="{{url_for('editCategory', category_id=category.id)}}">
+                <button class="btn btn-default" id="new-category">
+                    <span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span>Edit Book Category
+                </button>
+            </a>
+            <a href="{{url_for('deleteCategory', category_id=category.id)}}">
+                <button class="btn btn-default" id="new-category">
+                    <span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span>Delete Book Category
+                </button>
+            </a>
+            {% endif %}
+
+		</div>
+		<div class="col-md-2 text-right">
+			<figure class="creator">
+				<img class="creator_img" src="{{ picture}}">
+				<figcaption>{{ name }} <a href="{{url_for('gdisconnect')}}">Logout</a></figcaption>
+			</figure>
+		</div>
+	</div>
+	<div class="row padding-top padding-bottom">
+		<div class="col-md-1"></div>
+		<div class="col-md-11 padding-none">
+			
+		</div>
+		<div class="col-md-7"></div>
+	</div>
+	<div class="row">
+		<div class="col-md-12">
+			{% with messages = get_flashed_messages() %}
+				{% if messages %}
+					<ul>
+						{% for message in messages %}
+							 <li> <strong> {{ message }} </strong> </li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			{% endwith %}
+		</div>
+	</div>
+	{% if books !=[] %}	
+    <div class="row">
+			<div class="col-md-10 row">
+				<div class="col-md-8"><h2>Titles</h2></div>
+				<div class="col-md-2"><h3>Added by</h3></div>
+					{% for i in books %}
+							<div class="book-item col-md-7">
+								<a href="{{url_for('previewBook', category_id=category.id , book_id=i.id)}}"><h4>{{i.title}}</h4></a>
+								<h5>ISBN: {{i.isbn}}</h5>
+							</div>
+							<div class="book-item col-md-1"></div>
+							<div class="book-item col-md-2">
+								<img class="creator_img" src="{{i.user.picture}}">
+								<h6>{{i.user.name}}</h6>
+							</div>
+					{% endfor %}
+			</div>
+    </div>
+    {% else %}
+    <div>
+        <div class="col-md-10 row">
+            <h4>No Books added for this category yet. <a href="#">Add a Boook</a></h4>
+        </div>
+    </div>
+	{% endif %}
+{% endblock %}

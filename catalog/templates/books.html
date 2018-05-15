@@ -56,6 +56,13 @@
 							<div class="book-item col-md-7">
 								<a href="{{url_for('previewBook', category_id=category.id , book_id=i.id)}}"><h4>{{i.title}}</h4></a>
 								<h5>ISBN: {{i.isbn}}</h5>
+								{% if i.user_id == user %}
+								<a href="{{url_for('deleteBook', book_id=i.id)}}">
+									<button class="btn btn-default" id="new-category">
+										<span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span>Delete Book
+									</button>
+								</a>
+								{% endif %}
 							</div>
 							<div class="book-item col-md-1"></div>
 							<div class="book-item col-md-2">

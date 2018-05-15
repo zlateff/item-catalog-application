@@ -26,6 +26,30 @@
             {% for author in authors %}
             <h5> {{ author }} </h5>
             {% endfor %}
+            {% if bookadded != None %}
+                <h4>Added to the Library by:</h4>
+                <img class="creator_img" src="{{bookadded.user.picture}}">
+                <h6>{{bookadded.user.name}}</h6>
+            {% else %}
+                {% if name %}
+                    <form action="{{ url_for('newBook', google_id = google_id)}}" method = "post">
+                        <div class="form-group">
+                            <label for="category">Add to Category:</label>
+                            <select id="category" name="category_id">
+                            {% for category in categories %}
+                            <option value="{{category.id}}">{{category.name}}</option>
+                            {% endfor %}
+                            </select>
+                            <input type="hidden" name="google_id" value="{{google_id}}">
+                            <input type="hidden" name="title" value="{{title}}">
+                            <input type="hidden" name="isbn" value="{{isbn}}">
+                            <div class="padding-bottom"></div>
+                            <button type="submit" class="btn btn-default" id="submit" type="submit">
+                            Add Book</button>
+                        </div>
+                    </form>
+                {% endif %}
+            {% endif %}
         </div>
         <div class="col-md-6 col-md-offset-1 padding-top">
             <p>{{ description }}</p>

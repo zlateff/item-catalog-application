@@ -44,12 +44,18 @@
 		</div>
 	</div>
 	{% if books != [] %}	
-    <div class="row">
-			<div class="col-md-10 row">
-				<div class="col-md-8"><h3>Titles</h3></div>
-				<div class="col-md-2"><h4>Cover</h4></div>
+    <div class="row books">
+			<div class="col-lg-10 col-md-12 row">
                     {% for book in books %}
-                        <div class="book-row col-md-10 row">
+                        <div class="book-row col-md-12 row">
+                            <div class="book-img col-md-2">
+                                {% if 'imageLinks' in book['volumeInfo'] and 'thumbnail' in book['volumeInfo']['imageLinks'] %}
+                                    <img class="search_img" src="{{book['volumeInfo']['imageLinks']['thumbnail']}}">
+                                {% else %}
+                                    <h6>No Cover Available</h6>
+                                {% endif %}
+                            </div>
+                            <div class="book-space col-md-1"></div>
 							<div class="book-info col-md-9">
 								<h4>{{book['volumeInfo']['title']}}
                                     {% if 'subtitle' in book['volumeInfo'] %}
@@ -60,14 +66,6 @@
                                         Preview Book
                                 </a>
 							</div>
-							<div class="book-space col-md-1"></div>
-							<div class="book-img col-md-2">
-                                {% if 'imageLinks' in book['volumeInfo'] and 'thumbnail' in book['volumeInfo']['imageLinks'] %}
-                                <img class="search_img" src="{{book['volumeInfo']['imageLinks']['thumbnail']}}">
-                                {% else %}
-                                <h6>No Cover Available</h6>
-                                {% endif %}
-                            </div>
                         </div>
 					{% endfor %}
 			</div>

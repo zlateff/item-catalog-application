@@ -125,7 +125,7 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 200px; height: 200px;border-radius: 100px;-webkit-border-radius: 100px;-moz-border-radius: 100px;"> '
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
     return output
@@ -187,13 +187,34 @@ def gdisconnect():
         return response
 
 
+# JSON APIs to view Books in the Library
+@app.route('/category/<int:category_id>/books/JSON')
+def categoryBooksJSON(category_id):
+    category = session.query(Category).filter_by(id=category_id).one()
+    books = session.query(Book).filter_by(
+        category_id=category_id).all()
+    return jsonify(Books=[b.serialize for b in books])
+
+
+@app.route('/category/<int:category_id>/book/<int:book_id>/JSON')
+def bookJSON(category_id, book_id):
+    book = session.query(Book).filter_by(id=book_id).one()
+    return jsonify(Book=book.serialize)
+
+
+@app.route('/category/JSON')
+def categoriesJSON():
+    categories = session.query(Category).all()
+    return jsonify(Categories=[c.serialize for c in categories])
+
+
 # Show all categories
 @app.route('/')
 @app.route('/category/')
 def showCategories():
     categories = session.query(Category).order_by(asc(Category.name))
     if 'username' not in login_session:
-        return render_template('publiclibrary.html', categories=categories)
+        return render_template('library.html', categories=categories)
     else:
         return render_template('library.html', categories=categories, 
             picture=login_session['picture'], name=login_session['username'])
@@ -220,6 +241,7 @@ def newCategory():
 def editCategory(category_id):
     if 'username' not in login_session:
         return redirect('/login')
+    categories = session.query(Category).order_by(asc(Category.name))
     editedCategory = session.query(
         Category).filter_by(id=category_id).one()
     if editedCategory.user_id != login_session['user_id']:
@@ -230,13 +252,15 @@ def editCategory(category_id):
             flash('Category Successfully Edited %s' % editedCategory.name)
             return redirect(url_for('showCategories'))
     else:
-        return render_template('editCategory.html', category=editedCategory)
+        return render_template('editCategory.html', category=editedCategory, 
+                        categories=categories, name=login_session['username'])
 
 # Delete a category
 @app.route('/category/<int:category_id>/delete/', methods=['GET', 'POST'])
 def deleteCategory(category_id):
     if 'username' not in login_session:
         return redirect('/login')
+    categories = session.query(Category).order_by(asc(Category.name))
     categoryToDelete = session.query(
         Category).filter_by(id=category_id).one()
     if categoryToDelete.user_id != login_session['user_id']:
@@ -255,7 +279,8 @@ def deleteCategory(category_id):
         session.commit()
         return redirect(url_for('showCategories', category_id=category_id))
     else:
-        return render_template('deleteCategory.html', category=categoryToDelete)
+        return render_template('deleteCategory.html', category=categoryToDelete, 
+                            categories=categories, name=login_session['username'])
 
 # Show books
 @app.route('/category/<int:category_id>/')
@@ -267,7 +292,7 @@ def showBooks(category_id):
     books = session.query(Book).filter_by(
         category_id=category_id).all()
     if 'username' not in login_session:
-        return render_template('publicbooks.html', books=books, category=category, 
+        return render_template('books.html', books=books, category=category, 
             creator=creator, categories=categories)
     else:
         return render_template('books.html', books=books, category=category, 
@@ -316,7 +341,7 @@ def previewBook(category_id, book_id):
 def searchResults():
     if request.method == 'GET':
         entry = request.args.get('search')
-    else:
+    if entry == None:
         entry = ''
     categories = session.query(Category).order_by(asc(Category.name))
     url = ('https://www.googleapis.com/books/v1/volumes?q=%s' % (urllib.quote(entry, safe='')))
@@ -391,6 +416,7 @@ def newBook(google_id):
 def deleteBook(book_id):
     if 'username' not in login_session:
         return redirect('/login')
+    categories = session.query(Category).order_by(asc(Category.name))
     bookToDelete = session.query(
         Book).filter_by(id=book_id).one()
     if bookToDelete.user_id != login_session['user_id']:
@@ -405,7 +431,7 @@ def deleteBook(book_id):
         session.commit()
         return redirect(url_for('showCategories', category_id=category_id))
     else:
-        return render_template('deleteBook.html', book=bookToDelete)
+        return render_template('deleteBook.html', book=bookToDelete, categories=categories, name=login_session['username'])
 
 
 if __name__ == '__main__':

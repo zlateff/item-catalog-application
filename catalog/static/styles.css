@@ -1,4 +1,21 @@
 .creator_img {
-    max-width: 100%;
-    height: auto;
+    display: inline-block;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user_img {
+    float: left;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.flash ul {
+    list-style-type: none;
+    color: rgb(12, 80, 12);
+    background-color: rgb(175, 255, 175);
 }

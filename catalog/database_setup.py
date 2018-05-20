@@ -28,7 +28,7 @@ class Category(Base):
        """Return object data in easily serializeable format"""
        return {
            'name'         : self.name,
-           'id'           : self.id,
+           'category_id'  : self.id,
        }
  
 class Book(Base):
@@ -49,10 +49,10 @@ class Book(Base):
        """Return object data in easily serializeable format"""
        return {
            'title'      : self.title,
-           'author'     : self.author,
-           'id'         : self.id,
+           'book_id'    : self.id,
            'isbn'       : self.isbn,
            'google_id'  : self.google_id,
+           'catefory'   : self.category.name,
        }
 
 

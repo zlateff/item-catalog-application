@@ -67,7 +67,7 @@
 							<div class="book-item col-md-1"></div>
 							<div class="book-item col-md-2">
                                 {% if 'imageLinks' in book['volumeInfo'] and 'thumbnail' in book['volumeInfo']['imageLinks'] %}
-                                <img class="creator_img" src="{{book['volumeInfo']['imageLinks']['thumbnail']}}">
+                                <img class="search_img" src="{{book['volumeInfo']['imageLinks']['thumbnail']}}">
                                 {% else %}
                                 <h6>No Cover Available</h6>
                                 {% endif %}

@@ -37,7 +37,6 @@ class Book(Base):
     title = Column(String(80), nullable = False)
     id = Column(Integer, primary_key = True)
     isbn = Column(String(80), nullable = False)
-    google_id = Column(String(80), nullable = False)
     category_id = Column(Integer,ForeignKey('category.id'))
     category = relationship(Category)
     user_id = Column(Integer,ForeignKey('user.id'))
@@ -51,7 +50,6 @@ class Book(Base):
            'title'      : self.title,
            'book_id'    : self.id,
            'isbn'       : self.isbn,
-           'google_id'  : self.google_id,
            'catefory'   : self.category.name,
        }
 

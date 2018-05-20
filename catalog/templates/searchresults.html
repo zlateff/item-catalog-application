@@ -63,9 +63,19 @@
                                     : {{ book['volumeInfo']['subtitle'] }}
                                     {% endif %}
                                 </h4>
-                                <a class="btn btn-primary" href="{{ url_for('newBook', google_id=book['id']) }}" role="button">
-                                        Preview Book
-                                </a>
+                                {% if 'industryIdentifiers' in book['volumeInfo'] %}
+                                    {% if book['volumeInfo']['industryIdentifiers'][0]['type'].startswith("ISBN") %}
+                                    <a class="btn btn-primary" 
+                                    href="{{ url_for('newBook', isbn=book['volumeInfo']['industryIdentifiers'][0]['identifier']) }}" 
+                                    role="button">
+                                            Preview Book
+                                    </a>
+                                    {% else %}
+                                    <h6>Only books with ISBN can be added.</h6>
+                                    {% endif %}
+                                {% else %}
+                                <h6>Only books with ISBN can be added.</h6>
+                                {% endif %}
 							</div>
                         </div>
 					{% endfor %}

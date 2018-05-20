@@ -176,9 +176,8 @@ def gdisconnect():
         del login_session['email']
         del login_session['picture']
 
-        response = make_response(json.dumps('Successfully disconnected.'), 200)
-        response.headers['Content-Type'] = 'application/json'
-        return response
+        flash('You are now logged out.')
+        return redirect(url_for('showCategories'))
     else:
         # For whatever reason, the given token was invalid.
         response = make_response(
@@ -227,7 +226,7 @@ def newCategory():
         return redirect('/login')
     if request.method == 'POST':
         newCategory = Category(
-            name=request.form['name'], user_id=login_session['user_id'])
+            name=request.form['name'].capitalize(), user_id=login_session['user_id'])
         session.add(newCategory)
         flash('New Category %s Successfully Created' % newCategory.name)
         session.commit()
@@ -248,7 +247,7 @@ def editCategory(category_id):
         return redirect('/login')
     if request.method == 'POST':
         if request.form['name']:
-            editedCategory.name = request.form['name']
+            editedCategory.name = request.form['name'].capitalize()
             flash('Category Successfully Edited %s' % editedCategory.name)
             return redirect(url_for('showCategories'))
     else:
@@ -271,7 +270,7 @@ def deleteCategory(category_id):
         category_id=category_id).count()
     if numbooks > 0:
         flash('Cannot Delete Category with books in it! \n \
-                Delete all books in %s category first.' % editedCategory.name)
+                Delete all books in %s category first.' % categoryToDelete.name)
         return redirect(url_for('showBooks', category_id=category_id))
     if request.method == 'POST':
         session.delete(categoryToDelete)
@@ -429,7 +428,7 @@ def deleteBook(book_id):
         session.delete(bookToDelete)
         flash('%s Successfully Deleted' % bookToDelete.title)
         session.commit()
-        return redirect(url_for('showCategories', category_id=category_id))
+        return redirect(url_for('showBooks', category_id=category_id))
     else:
         return render_template('deleteBook.html', book=bookToDelete, categories=categories, name=login_session['username'])
 

@@ -1,4 +1,5 @@
 {% extends "main.html" %}
+{% block title %}{{ category.name }}{% endblock %}
 {% block content %}
 	<div class="row divider">
 		<div class="col-md-12"></div>
@@ -43,7 +44,7 @@
 		<div class="flash">
 			{% with messages = get_flashed_messages() %}
 				{% if messages %}
-					<ul>
+					<ul class="alert alert-info">
 						{% for message in messages %}
 							 <li> <strong> {{ message }} </strong> </li>
 						{% endfor %}

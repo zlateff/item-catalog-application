@@ -3,7 +3,7 @@
     <div class="row divider">
 		<div class="col-md-12"></div>
 	</div>
-	<div class="row banner menu">
+	<div class="row banner">
 		<div class="col-md-10 col-md-offset-1 padding-none">
 			<h1>{{title}}</h1>
         </div>
@@ -12,7 +12,7 @@
             <a href="{{url_for('showLogin')}}">Click Here to Log in </a>
             {% endif %}
             {% if name %}
-            <figure class="creator">
+            <figure>
                 <img class="creator_img" src="{{ picture }}">
                 <figcaption>{{ name }} <a href="{{url_for('gdisconnect')}}">Logout</a></figcaption>
             </figure>

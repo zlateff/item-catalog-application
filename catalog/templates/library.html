@@ -3,22 +3,22 @@
 	<div class="row divider">
 		<div class="col-md-12"></div>
 	</div>
-	<div class="row banner main">
-		<div class="col-md-1"></div>
-		<div class="col-md-9 padding-none">
+	<div class="row banner">
+        <div class="col-md-1 col-md-offset-1 padding-none"></div>
+		<div class="col-md-9 col-md-offset-1 padding-none">
             <h1>Categories</h1>
             {% if name %}
             <a href="{{url_for('newCategory')}}">
                 <button class="btn btn-success" id="new-category">
-                    <span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span>Add Book Category
+                    Add Book Category
                 </button>
             </a>
             {% endif %}
         </div>
-        <div class="col-md-2 text-right">
+        <div class="col-md-2 col-md-offset-1 padding-none">
             {% if name %}
             <figure class="user">
-                <img class="user_img" src="{{ picture }}">
+                <img class="creator_img" src="{{ picture }}">
                 <figcaption>{{ name }} <a href="{{url_for('gdisconnect')}}">Logout</a></figcaption>
             </figure>
             {% else %}
@@ -42,16 +42,17 @@
         {% endwith %}
         </div>
     </div>
-
+    <div class="col-md-12">
 	{% for category in categories %}
-		<a href = "{{url_for('showBooks', category_id = category.id)}}">
 			<div class="row">
 				<div class="col-md-1"></div>
-					<div class="col-md-10 category-list">
-						<h3>{{category.name}}</h3>
+					<div class="col-md-7 category-list">
+                        <a href = "{{url_for('showBooks', category_id = category.id)}}">
+                        <h3>{{category.name}}</h3>
+                        </a>
 					</div>
-				<div class="col-md-1"></div>
+				<div class="col-md-4"></div>
 			</div>
-		</a>
-	{% endfor %}
+    {% endfor %}
+    </div>
 {% endblock %}

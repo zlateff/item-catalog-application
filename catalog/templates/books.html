@@ -1,9 +1,9 @@
 {% extends "main.html" %}
 {% block content %}
-	<div class="row divider green">
+	<div class="row divider">
 		<div class="col-md-12"></div>
 	</div>
-	<div class="row banner book">
+	<div class="row banner">
 		<div class="col-md-10 col-md-offset-1 padding-none">
 			<h1>{{ category.name }} Books</h1>
 			{% if name %}
@@ -27,10 +27,10 @@
 			{% endif %}
 
 		</div>
-		<div class="col-md-2 text-right">
+		<div class="col-md-2 col-md-offset-1 padding-none">
 			{% if name %}
 			<figure class="user">
-				<img class="user_img" src="{{ picture}}">
+				<img class="creator_img" src="{{ picture}}">
 				<figcaption>{{ name }} <a href="{{url_for('gdisconnect')}}">Logout</a></figcaption>
 			</figure>
 			{% else %}
@@ -38,13 +38,7 @@
 			{% endif %}
 		</div>
 	</div>
-	<div class="row padding-top padding-bottom">
-		<div class="col-md-1"></div>
-		<div class="col-md-11 padding-none">
-			
-		</div>
-		<div class="col-md-7"></div>
-	</div>
+	
 	<div class="row">
 		<div class="flash">
 			{% with messages = get_flashed_messages() %}
@@ -59,40 +53,36 @@
 		</div>
 	</div>
 	{% if books !=[] %}	
-    <div class="row">
+    <div class="row books">
 			<div class="col-md-10 row">
-				<div class="col-md-8"><h2>Titles</h2></div>
-				<div class="col-md-2"><h3>Added by</h3></div>
+				<div class="col-md-8"><h3>Titles</h3></div>
+				<div class="col-md-2"><h4>Added by</h4></div>
 					{% for b in books %}
-							<div class="book-item col-md-7">
+						<div class="book-row col-md-10 row">
+							<div class="book-info col-md-9">
 								<a href="{{url_for('previewBook', category_id=category.id , book_id=b.id)}}"><h4>{{b.title}}</h4></a>
 								<h5>ISBN: {{b.isbn}}</h5>
 								{% if name %}
 								{% if b.user_id == user %}
-								<a href="{{url_for('deleteBook', book_id=b.id)}}">
-									<button class="btn btn-default" id="new-category">
-										<span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span>Delete Book
-									</button>
+								<a href="{{url_for('deleteBook', book_id=b.id)}}" class="btn btn-danger">
+										Delete Book
 								</a>
 								{% endif %}
 								{% endif %}
 							</div>
-							<div class="book-item col-md-1"></div>
-							<div class="book-item col-md-2">
+							<div class="book-space col-md-1"></div>
+							<div class="book-user col-md-2">
 								<img class="creator_img" src="{{b.user.picture}}">
 								<h6>{{b.user.name}}</h6>
 							</div>
+						</div>
 					{% endfor %}
 			</div>
     </div>
     {% else %}
     <div>
         <div class="col-md-10 row">
-            <h4>No Books added for this category yet. 
-				{% if name %}
-				<a href="{{url_for('searchResults')}}">Add a Boook</a>
-				{% endif %}
-			</h4>
+            <h4>No Books added for this category yet.</h4>
         </div>
     </div>
 	{% endif %}

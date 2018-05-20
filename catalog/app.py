@@ -38,7 +38,8 @@ def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     login_session['state'] = state
-    return render_template('login.html', STATE=state)
+    categories = session.query(Category).order_by(asc(Category.name))
+    return render_template('login.html', categories=categories, STATE=state)
 
 
 @app.route('/gconnect', methods=['POST'])

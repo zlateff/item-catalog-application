@@ -1,23 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-
+{% extends "main.html" %}
+{% block headscript %}
 <!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
 <script src="//apis.google.com/js/platform.js?onload=start"> </script>
 <!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
+{% endblock %}
+{% block title %}Login{% endblock %}
 
-
-</head>
-
-
-<body>  
-
-
+{% block content %}
 <!-- GOOGLE PLUS SIGN IN-->
 
-          
-          <div id="signinButton">
+      <div id="google-sign" class="banner col-md-8 col-sm-12 border border-primary rounded">
+        <h5>For convenience and security this application utilizes Google Sign-In</h5>   
+        <div id="signinButton">
           <span class="g-signin"
             data-scope="openid email"
             data-clientid="702829088284-0f1oriv4icf9ruq7itocudoobgsfr7ar.apps.googleusercontent.com"
@@ -28,8 +22,8 @@
             data-approvalprompt="force">
           </span>
         </div>
-
-<div id="result"></div>
+      </div>   
+      <div id="result"></div>
 
 <script>
 function signInCallback(authResult) {
@@ -69,7 +63,4 @@ function signInCallback(authResult) {
 
 
 <!--END GOOGLE PLUS SIGN IN -->
-
-  </body>
-
-  </html>
+{% endblock %}

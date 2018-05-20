@@ -36,6 +36,15 @@ body {
     object-fit: cover;
 }
 
+#google-sign {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#signinButton {
+    margin: 40px;
+}
+
 .flash ul {
     list-style-type: none;
     color: rgb(12, 80, 12);

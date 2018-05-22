@@ -15,47 +15,47 @@ class User(Base):
     email = Column(String(250), nullable=False)
     picture = Column(String(250))
 
+
 class Category(Base):
     __tablename__ = 'category'
-   
+
     id = Column(Integer, primary_key=True)
     name = Column(String(250), nullable=False)
-    user_id = Column(Integer,ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
     @property
     def serialize(self):
-       """Return object data in easily serializeable format"""
-       return {
-           'name'         : self.name,
-           'category_id'  : self.id,
-       }
- 
+        """Return object data in easily serializeable format"""
+        return {
+            'name': self.name,
+            'category_id': self.id,
+        }
+
+
 class Book(Base):
     __tablename__ = 'book'
 
-    title = Column(String(80), nullable = False)
-    id = Column(Integer, primary_key = True)
-    isbn = Column(String(80), nullable = False)
-    category_id = Column(Integer,ForeignKey('category.id'))
+    title = Column(String(80), nullable=False)
+    id = Column(Integer, primary_key=True)
+    isbn = Column(String(80), nullable=False)
+    category_id = Column(Integer, ForeignKey('category.id'))
     category = relationship(Category)
-    user_id = Column(Integer,ForeignKey('user.id'))
+    user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
-
 
     @property
     def serialize(self):
-       """Return object data in easily serializeable format"""
-       return {
-           'title'      : self.title,
-           'book_id'    : self.id,
-           'isbn'       : self.isbn,
-           'catefory'   : self.category.name,
-       }
-
+        """Return object data in easily serializeable format"""
+        return {
+            'title': self.title,
+            'book_id': self.id,
+            'isbn': self.isbn,
+            'catefory': self.category.name,
+        }
 
 
 engine = create_engine('sqlite:///library.db')
- 
+
 
 Base.metadata.create_all(engine)

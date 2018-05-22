@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, redirect, jsonify, url_for, flash
+from flask import Flask, render_template, request, redirect, jsonify, \
+            url_for, flash
 
 
 from sqlalchemy import create_engine, asc
@@ -94,8 +95,8 @@ def gconnect():
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
-                                 200)
+        response = make_response(
+            json.dumps('Current user is already connected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -126,7 +127,8 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 200px; height: 200px;border-radius: 100px;-webkit-border-radius: 100px;-moz-border-radius: 100px;"> '
+    output += ' " style = "width: 200px; height: 200px;border-radius: 100px;\
+            -webkit-border-radius: 100px;-moz-border-radius: 100px;"> '
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
     return output
@@ -148,11 +150,11 @@ def getUserInfo(user_id):
 
 
 def getUserID(email):
-    try:
-        user = session.query(User).filter_by(email=email).one()
-        return user.id
-    except:
+    user = session.query(User).filter_by(email=email).first()
+    if user is None:
         return None
+    else:
+        return user.id
 
 
 # DISCONNECT - Revoke a current user's token and reset their login_session
@@ -216,8 +218,9 @@ def showCategories():
     if 'username' not in login_session:
         return render_template('library.html', categories=categories)
     else:
-        return render_template('library.html', categories=categories, 
-            picture=login_session['picture'], name=login_session['username'])
+        return render_template('library.html', categories=categories,
+                               picture=login_session['picture'],
+                               name=login_session['username'])
 
 
 # Create a new category
@@ -227,7 +230,8 @@ def newCategory():
         return redirect('/login')
     if request.method == 'POST':
         newCategory = Category(
-            name=request.form['name'].capitalize(), user_id=login_session['user_id'])
+            name=request.form['name'].capitalize(),
+            user_id=login_session['user_id'])
         session.add(newCategory)
         flash('New Category %s Successfully Created' % newCategory.name)
         session.commit()
@@ -252,8 +256,10 @@ def editCategory(category_id):
             flash('Category Successfully Edited %s' % editedCategory.name)
             return redirect(url_for('showCategories'))
     else:
-        return render_template('editCategory.html', category=editedCategory, 
-                        categories=categories, name=login_session['username'])
+        return render_template('editCategory.html', category=editedCategory,
+                               categories=categories,
+                               name=login_session['username'])
+
 
 # Delete a category
 @app.route('/category/<int:category_id>/delete/', methods=['GET', 'POST'])
@@ -271,7 +277,7 @@ def deleteCategory(category_id):
         category_id=category_id).count()
     if numbooks > 0:
         flash('Cannot Delete Category with books in it! \n \
-                Delete all books in %s category first.' % categoryToDelete.name)
+              Delete all books in %s category first.' % categoryToDelete.name)
         return redirect(url_for('showBooks', category_id=category_id))
     if request.method == 'POST':
         session.delete(categoryToDelete)
@@ -279,8 +285,11 @@ def deleteCategory(category_id):
         session.commit()
         return redirect(url_for('showCategories', category_id=category_id))
     else:
-        return render_template('deleteCategory.html', category=categoryToDelete, 
-                            categories=categories, name=login_session['username'])
+        return render_template('deleteCategory.html',
+                               category=categoryToDelete,
+                               categories=categories,
+                               name=login_session['username'])
+
 
 # Show books
 @app.route('/category/<int:category_id>/')
@@ -292,12 +301,14 @@ def showBooks(category_id):
     books = session.query(Book).filter_by(
         category_id=category_id).all()
     if 'username' not in login_session:
-        return render_template('books.html', books=books, category=category, 
-            creator=creator, categories=categories)
+        return render_template('books.html', books=books, category=category,
+                               creator=creator, categories=categories)
     else:
-        return render_template('books.html', books=books, category=category, 
-            creator=creator, categories=categories, 
-            picture=login_session['picture'], name=login_session['username'], user=login_session['user_id'])
+        return render_template('books.html', books=books, category=category,
+                               creator=creator, categories=categories,
+                               picture=login_session['picture'],
+                               name=login_session['username'],
+                               user=login_session['user_id'])
 
 
 # Preview a book
@@ -306,13 +317,15 @@ def previewBook(category_id, book_id):
     categories = session.query(Category).order_by(asc(Category.name))
     book = session.query(Book).filter_by(id=book_id).one()
     creator = getUserInfo(book.user_id)
-    url = ('https://www.googleapis.com/books/v1/volumes?q=id:%s&key=AIzaSyA5hoxGZWezMMVz1eM-lGHy4-qDgeW4NDY' % (book.isbn))
+    url = ('https://www.googleapis.com/books/v1/volumes?q=id:%s' +
+           '&key=AIzaSyA5hoxGZWezMMVz1eM-lGHy4-qDgeW4NDY' % (book.isbn))
     h = httplib2.Http()
-    result = json.loads(h.request(url,'GET')[1])
+    result = json.loads(h.request(url, 'GET')[1])
     if result['items']:
         thebook = result['items'][0]
         if 'subtitle' in thebook['volumeInfo']:
-            title = thebook['volumeInfo']['title']+': '+thebook['volumeInfo']['subtitle']
+            title = thebook['volumeInfo']['title']+': '+
+            thebook['volumeInfo']['subtitle']
         else:
             title = thebook['volumeInfo']['title']
         cover = thebook['volumeInfo']['imageLinks']['thumbnail']
@@ -325,12 +338,17 @@ def previewBook(category_id, book_id):
         else:
             description = 'No Description available for this book.'
         if 'username' not in login_session:
-            return render_template('previewBook.html', title=title, cover=cover, authors=authors, 
-                description=description, creator=creator, categories=categories)
+            return render_template('previewBook.html', title=title,
+                                   cover=cover,
+                                   authors=authors, description=description,
+                                   creator=creator, categories=categories)
         else:
-            return render_template('previewBook.html', title=title, cover=cover, authors=authors, 
-                description=description, picture=login_session['picture'], name=login_session['username'],
-                creator=creator, categories=categories)
+            return render_template('previewBook.html', title=title,
+                                   cover=cover,
+                                   authors=authors, description=description,
+                                   picture=login_session['picture'],
+                                   name=login_session['username'],
+                                   creator=creator, categories=categories)
     else:
         flash('Cannot retrieve the information for %s' % book.title)
         return redirect(url_for('showCategories', category_id=category_id))
@@ -341,23 +359,25 @@ def previewBook(category_id, book_id):
 def searchResults():
     if request.method == 'GET':
         entry = request.args.get('search')
-    if entry == None:
+    if entry is None:
         entry = ''
     categories = session.query(Category).order_by(asc(Category.name))
-    url = ('https://www.googleapis.com/books/v1/volumes?q=%s' % (urllib.quote(entry, safe='')))
+    url = ('https://www.googleapis.com/books/v1/volumes?q=%s' %
+           (urllib.quote(entry, safe='')))
     h = httplib2.Http()
-    result = json.loads(h.request(url,'GET')[1])
+    result = json.loads(h.request(url, 'GET')[1])
     if 'error' in result or result['totalItems'] < 1:
         books = []
     else:
         books = result['items']
     if 'username' not in login_session:
-        return render_template('searchresults.html', books=books, 
-                categories=categories, entry=entry)
+        return render_template('searchresults.html', books=books,
+                               categories=categories, entry=entry)
     else:
-        return render_template('searchresults.html', books=books, 
-                picture=login_session['picture'], name=login_session['username'],
-                categories=categories, entry=entry)
+        return render_template('searchresults.html', books=books,
+                               picture=login_session['picture'],
+                               name=login_session['username'],
+                               categories=categories, entry=entry)
 
 
 # Add a new book
@@ -365,17 +385,19 @@ def searchResults():
 def newBook(isbn):
     categories = session.query(Category).order_by(asc(Category.name))
     if request.method == 'POST':
-        newBook = Book(title=request.form['title'], isbn=request.form['isbn'], 
-                    category_id=request.form['category_id'], 
-                    user_id=login_session['user_id'])
+        newBook = Book(title=request.form['title'], isbn=request.form['isbn'],
+                       category_id=request.form['category_id'],
+                       user_id=login_session['user_id'])
         session.add(newBook)
         session.commit()
         flash('%s Successfully Added' % (newBook.title))
-        return redirect(url_for('showBooks', category_id=request.form['category_id']))
+        return redirect(url_for('showBooks',
+                        category_id=request.form['category_id']))
     else:
-        url = ('https://www.googleapis.com/books/v1/volumes?q=isbn:%s&key=AIzaSyA5hoxGZWezMMVz1eM-lGHy4-qDgeW4NDY' % (isbn))
+        url = ('https://www.googleapis.com/books/v1/volumes?q=isbn:%s' +
+               '&key=AIzaSyA5hoxGZWezMMVz1eM-lGHy4-qDgeW4NDY' % (isbn))
         h = httplib2.Http()
-        result = json.loads(h.request(url,'GET')[1])
+        result = json.loads(h.request(url, 'GET')[1])
         if 'error' in result or result['totalItems'] < 1:
             flash('No Book was found with ISBN %s' % isbn)
             return redirect(url_for('showCategories'))
@@ -383,10 +405,12 @@ def newBook(isbn):
             thebook = result['items'][0]
             bookadded = session.query(Book).filter_by(isbn=isbn).first()
         if 'subtitle' in thebook['volumeInfo']:
-            title = thebook['volumeInfo']['title']+': '+thebook['volumeInfo']['subtitle']
+            title = thebook['volumeInfo']['title']+': '+
+            thebook['volumeInfo']['subtitle']
         else:
             title = thebook['volumeInfo']['title']
-        if 'imageLinks' in thebook['volumeInfo'] and 'thumbnail' in thebook['volumeInfo']['imageLinks']:
+        if ('imageLinks' in thebook['volumeInfo']
+                and 'thumbnail' in thebook['volumeInfo']['imageLinks']):
             cover = thebook['volumeInfo']['imageLinks']['thumbnail']
         else:
             cover = '#'
@@ -399,12 +423,17 @@ def newBook(isbn):
         else:
             description = 'No Description available for this book.'
         if 'username' not in login_session:
-            return render_template('newbook.html', title=title, cover=cover, authors=authors, 
-                description=description, categories=categories, bookadded=bookadded, isbn=isbn)
+            return render_template('newbook.html', title=title, cover=cover,
+                                   authors=authors, description=description,
+                                   categories=categories,
+                                   bookadded=bookadded, isbn=isbn)
         else:
-            return render_template('newbook.html', title=title, cover=cover, authors=authors, 
-                description=description, picture=login_session['picture'], name=login_session['username'],
-                categories=categories, bookadded=bookadded, isbn=isbn)
+            return render_template('newbook.html', title=title, cover=cover,
+                                   authors=authors, description=description,
+                                   picture=login_session['picture'],
+                                   name=login_session['username'],
+                                   categories=categories, bookadded=bookadded,
+                                   isbn=isbn)
 
 
 # Delete a book
@@ -427,7 +456,9 @@ def deleteBook(book_id):
         session.commit()
         return redirect(url_for('showBooks', category_id=category_id))
     else:
-        return render_template('deleteBook.html', book=bookToDelete, categories=categories, name=login_session['username'])
+        return render_template('deleteBook.html', book=bookToDelete,
+                               categories=categories,
+                               name=login_session['username'])
 
 
 if __name__ == '__main__':

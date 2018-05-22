@@ -317,15 +317,15 @@ def previewBook(category_id, book_id):
     categories = session.query(Category).order_by(asc(Category.name))
     book = session.query(Book).filter_by(id=book_id).one()
     creator = getUserInfo(book.user_id)
-    url = ('https://www.googleapis.com/books/v1/volumes?q=id:%s' +
-           '&key=AIzaSyA5hoxGZWezMMVz1eM-lGHy4-qDgeW4NDY' % (book.isbn))
+    url = ("https://www.googleapis.com/books/v1/volumes?q=id:{0}"
+           "&key=AIzaSyA5hoxGZWezMMVz1eM-lGHy4-qDgeW4NDY".format(book.isbn))
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
     if result['items']:
         thebook = result['items'][0]
         if 'subtitle' in thebook['volumeInfo']:
-            title = thebook['volumeInfo']['title']+': '+
-            thebook['volumeInfo']['subtitle']
+            title = (thebook['volumeInfo']['title'] + ': ' +
+                     thebook['volumeInfo']['subtitle'])
         else:
             title = thebook['volumeInfo']['title']
         cover = thebook['volumeInfo']['imageLinks']['thumbnail']
@@ -394,8 +394,8 @@ def newBook(isbn):
         return redirect(url_for('showBooks',
                         category_id=request.form['category_id']))
     else:
-        url = ('https://www.googleapis.com/books/v1/volumes?q=isbn:%s' +
-               '&key=AIzaSyA5hoxGZWezMMVz1eM-lGHy4-qDgeW4NDY' % (isbn))
+        url = ("https://www.googleapis.com/books/v1/volumes?q=isbn:{0}"
+               "&key=AIzaSyA5hoxGZWezMMVz1eM-lGHy4-qDgeW4NDY".format(isbn))
         h = httplib2.Http()
         result = json.loads(h.request(url, 'GET')[1])
         if 'error' in result or result['totalItems'] < 1:
@@ -405,8 +405,8 @@ def newBook(isbn):
             thebook = result['items'][0]
             bookadded = session.query(Book).filter_by(isbn=isbn).first()
         if 'subtitle' in thebook['volumeInfo']:
-            title = thebook['volumeInfo']['title']+': '+
-            thebook['volumeInfo']['subtitle']
+            title = (thebook['volumeInfo']['title'] + ': ' +
+                     thebook['volumeInfo']['subtitle'])
         else:
             title = thebook['volumeInfo']['title']
         if ('imageLinks' in thebook['volumeInfo']

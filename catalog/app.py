@@ -190,24 +190,39 @@ def gdisconnect():
 
 
 # JSON APIs to view Books in the Library
+# Return all books for a given category
 @app.route('/category/<int:category_id>/books/JSON')
 def categoryBooksJSON(category_id):
-    category = session.query(Category).filter_by(id=category_id).one()
+    category = session.query(Category).filter_by(id=category_id).first()
+    if category is None:
+        return "{None found}"
     books = session.query(Book).filter_by(
         category_id=category_id).all()
     return jsonify(Books=[b.serialize for b in books])
 
 
+# Return a specific book in a given category
 @app.route('/category/<int:category_id>/book/<int:book_id>/JSON')
 def bookJSON(category_id, book_id):
-    book = session.query(Book).filter_by(id=book_id).one()
-    return jsonify(Book=book.serialize)
+    book = session.query(Book).filter_by(id=book_id).first()
+    if book is None:
+        return "{None found}"
+    else:
+        return jsonify(Book=book.serialize)
 
 
-@app.route('/category/JSON')
+# Return all available book categories
+@app.route('/categories/JSON')
 def categoriesJSON():
     categories = session.query(Category).all()
     return jsonify(Categories=[c.serialize for c in categories])
+
+
+# Return all the books that are currently in the database
+@app.route('/library/JSON')
+def libraryJSON():
+    books = session.query(Book).all()
+    return jsonify(Book=[b.serialize for b in books])
 
 
 # Show all categories
@@ -254,7 +269,7 @@ def editCategory(category_id):
         if request.form['name']:
             editedCategory.name = request.form['name'].capitalize()
             flash('Category Successfully Edited %s' % editedCategory.name)
-            return redirect(url_for('showCategories'))
+            return redirect(url_for('showBooks', category_id=category_id))
     else:
         return render_template('editCategory.html', category=editedCategory,
                                categories=categories,
@@ -281,9 +296,9 @@ def deleteCategory(category_id):
         return redirect(url_for('showBooks', category_id=category_id))
     if request.method == 'POST':
         session.delete(categoryToDelete)
-        flash('%s Successfully Deleted' % categoryToDelete.name)
+        flash("'%s' successfully deleted." % categoryToDelete.name)
         session.commit()
-        return redirect(url_for('showCategories', category_id=category_id))
+        return redirect(url_for('showCategories'))
     else:
         return render_template('deleteCategory.html',
                                category=categoryToDelete,
@@ -350,7 +365,7 @@ def previewBook(category_id, book_id):
                                    name=login_session['username'],
                                    creator=creator, categories=categories)
     else:
-        flash('Cannot retrieve the information for %s' % book.title)
+        flash("Cannot retrieve the information for '%s'." % book.title)
         return redirect(url_for('showCategories', category_id=category_id))
 
 
@@ -362,8 +377,9 @@ def searchResults():
     if entry is None:
         entry = ''
     categories = session.query(Category).order_by(asc(Category.name))
-    url = ('https://www.googleapis.com/books/v1/volumes?q=%s' %
-           (urllib.quote(entry, safe='')))
+    url = ("https://www.googleapis.com/books/v1/volumes?q={0}"
+           "&key=AIzaSyA5hoxGZWezMMVz1eM"
+           "-lGHy4-qDgeW4NDY".format(urllib.quote(entry, safe='')))
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
     if 'error' in result or result['totalItems'] < 1:
@@ -390,7 +406,7 @@ def newBook(isbn):
                        user_id=login_session['user_id'])
         session.add(newBook)
         session.commit()
-        flash('%s Successfully Added' % (newBook.title))
+        flash("'%s' successfully added." % (newBook.title))
         return redirect(url_for('showBooks',
                         category_id=request.form['category_id']))
     else:
@@ -452,7 +468,7 @@ def deleteBook(book_id):
     category_id = bookToDelete.category.id
     if request.method == 'POST':
         session.delete(bookToDelete)
-        flash('%s Successfully Deleted' % bookToDelete.title)
+        flash("'%s' successfully deleted." % bookToDelete.title)
         session.commit()
         return redirect(url_for('showBooks', category_id=category_id))
     else:

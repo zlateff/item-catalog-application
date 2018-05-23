@@ -1,36 +1,39 @@
 {% extends "main.html" %}
 {% block title %}Search{% endblock %}
 {% block content %}
-	<div class="row divider">
-		<div class="col-md-12"></div>
-	</div>
 	<div class="row banner book">
 		<div class="col-md-10 col-md-offset-1 padding-none">
             <h1>Search for a new book</h1>
-		</div>
+        </div>
+        
 		<div class="col-md-2 col-md-offset-1 padding-none">
-                {% if not name %}
-                <a href="{{url_for('showLogin')}}">Click Here to Log in </a>
-                {% endif %}
-                {% if name %}
+            {% if name %}
                 <figure class="creator">
                     <img class="creator_img" src="{{ picture }}">
                     <figcaption>{{ name }} <a href="{{url_for('gdisconnect')}}">Logout</a></figcaption>
                 </figure>
-                {% endif %}
+            {% else %}
+                <a href="{{url_for('showLogin')}}" class="btn btn-primary">Login</a>
+            {% endif %}
 		</div>
     </div>
         
 	<div class="row book-search">
-		<div class="col-md-1"></div>
+        <div class="col-md-1"></div>
+        
 		<div class="col-md-11 padding-none">
             <form class="form-inline my-2 my-lg-0" action="{{ url_for('searchResults')}}">
-            <label for="search" id="search-label" >Book Title or ISBN:</label>
-            <input class="form-control mr-sm-2" type="search" id="search" name="search" value="{{ entry }}" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search for Book</button>
-		</div>
+                <label for="search" id="search-label" >Book Title or ISBN:</label>
+                <input class="form-control mr-sm-2" type="search" id="search" name="search" value="{{ entry }}" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+                    Search for Book
+                </button>
+            </form>
+        </div>
+        
 		<div class="col-md-7"></div>
-	</div>
+    </div>
+    
 	<div class="row">
 		<div class="col-md-12">
 			{% with messages = get_flashed_messages() %}
@@ -43,43 +46,46 @@
 				{% endif %}
 			{% endwith %}
 		</div>
-	</div>
+    </div>
+    
 	{% if books != [] %}	
     <div class="row books">
-			<div class="col-lg-10 col-md-12 row">
-                    {% for book in books %}
-                        <div class="book-row col-md-12 row">
-                            <div class="book-img col-md-2">
-                                {% if 'imageLinks' in book['volumeInfo'] and 'thumbnail' in book['volumeInfo']['imageLinks'] %}
-                                    <img class="search_img" src="{{book['volumeInfo']['imageLinks']['thumbnail']}}">
-                                {% else %}
-                                    <h6>No Cover Available</h6>
-                                {% endif %}
-                            </div>
-                            <div class="book-space col-md-1"></div>
-							<div class="book-info col-md-9">
-								<h4>{{book['volumeInfo']['title']}}
-                                    {% if 'subtitle' in book['volumeInfo'] %}
-                                    : {{ book['volumeInfo']['subtitle'] }}
-                                    {% endif %}
-                                </h4>
-                                {% if 'industryIdentifiers' in book['volumeInfo'] %}
-                                    {% if book['volumeInfo']['industryIdentifiers'][0]['type'].startswith("ISBN") %}
-                                    <a class="btn btn-primary" 
+		<div class="col-lg-10 col-md-12 row">
+            {% for book in books %}
+                <div class="book-row col-md-12 row">
+                    <div class="book-img col-md-2">
+                        {% if 'imageLinks' in book['volumeInfo'] and 'thumbnail' in book['volumeInfo']['imageLinks'] %}
+                            <img class="search_img" src="{{book['volumeInfo']['imageLinks']['thumbnail']}}">
+                        {% else %}
+                            <h6>No Cover Available</h6>
+                        {% endif %}
+                    </div>
+
+                    <div class="book-space col-md-1"></div>
+
+					<div class="book-info col-md-9">
+						<h4>{{book['volumeInfo']['title']}}
+                            {% if 'subtitle' in book['volumeInfo'] %}
+                                : {{ book['volumeInfo']['subtitle'] }}
+                            {% endif %}
+                        </h4>
+                        {% if 'industryIdentifiers' in book['volumeInfo'] %}
+                            {% if book['volumeInfo']['industryIdentifiers'][0]['type'].startswith("ISBN") %}
+                                <a class="btn btn-primary" 
                                     href="{{ url_for('newBook', isbn=book['volumeInfo']['industryIdentifiers'][0]['identifier']) }}" 
                                     role="button">
-                                            Preview Book
-                                    </a>
-                                    {% else %}
-                                    <h6>Only books with ISBN can be added.</h6>
-                                    {% endif %}
-                                {% else %}
+                                        Preview Book
+                                </a>
+                            {% else %}
                                 <h6>Only books with ISBN can be added.</h6>
-                                {% endif %}
-							</div>
-                        </div>
-					{% endfor %}
-			</div>
+                            {% endif %}
+                        {% else %}
+                            <h6>Only books with ISBN can be added.</h6>
+                        {% endif %}
+					</div>
+                </div>
+			{% endfor %}
+		</div>
     </div>
     {% else %}
     <div>

@@ -26,8 +26,8 @@
 				</button>
 			</a>
 			{% endif %}
-
 		</div>
+
 		<div class="col-md-2 col-md-offset-1 padding-none">
 			{% if name %}
 			<figure class="user">
@@ -35,7 +35,7 @@
 				<figcaption>{{ name }} <a href="{{url_for('gdisconnect')}}">Logout</a></figcaption>
 			</figure>
 			{% else %}
-			<a href="{{url_for('showLogin')}}">Click Here to Log in </a>
+			<a href="{{url_for('showLogin')}}" class="btn btn-primary">Login</a>
 			{% endif %}
 		</div>
 	</div>
@@ -53,23 +53,24 @@
 			{% endwith %}
 		</div>
 	</div>
+
 	{% if books !=[] %}	
     <div class="row books">
-			<div class="col-lg-10 col-md-12 row">
-				<div class="col-md-10 d-none d-lg-block"><h3>Titles</h3></div>
-				<div class="col-md-2 d-none d-lg-block"><h5>Added by</h5></div>
-					{% for b in books %}
-						<div class="book-row col-md-12 row">
-							<div class="book-info col-md-9">
-								<a href="{{url_for('previewBook', category_id=category.id , book_id=b.id)}}"><h4>{{b.title}}</h4></a>
-								<h5>ISBN: {{b.isbn}}</h5>
-								{% if name %}
+		<div class="col-lg-10 col-md-12 row">
+			<div class="col-md-10 d-none d-lg-block"><h3>Titles</h3></div>
+			<div class="col-md-2 d-none d-lg-block"><h5>Added by</h5></div>
+				{% for b in books %}
+					<div class="book-row col-md-12 row">
+						<div class="book-info col-md-9">
+							<a href="{{url_for('previewBook', category_id=category.id , book_id=b.id)}}"><h4>{{b.title}}</h4></a>
+							<h5>ISBN: {{b.isbn}}</h5>
+							{% if name %}
 								{% if b.user_id == user %}
 								<a href="{{url_for('deleteBook', book_id=b.id)}}" class="btn btn-danger">
-										Delete Book
+									Delete Book
 								</a>
 								{% endif %}
-								{% endif %}
+							{% endif %}
 							</div>
 							<div class="book-space col-md-1"></div>
 							<div class="book-user col-md-2">
@@ -78,7 +79,7 @@
 							</div>
 						</div>
 					{% endfor %}
-			</div>
+		</div>
     </div>
     {% else %}
     <div>

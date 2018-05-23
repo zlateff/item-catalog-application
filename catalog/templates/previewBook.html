@@ -34,7 +34,13 @@
             </p>
         </div>
         <div class="col-md-6 col-md-offset-1 padding-top">
-            <p>{{ description }}</p>
+            <p class="mb-0">{{ description }}</p>
+        </div>
+        <div class="col-md-4 padding-top"></div>
+        <div class="col-md-2 padding-top backlink">
+            <script>
+                document.write('<a href="' + document.referrer + '">Back to Category</a>');
+            </script>
         </div>
 	</div>
 {% endblock %}

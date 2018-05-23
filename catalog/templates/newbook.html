@@ -34,9 +34,9 @@
             {% else %}
                 {% if name %}
                     <form action="{{ url_for('newBook', isbn = isbn)}}" method = "post">
-                        <div class="form-group">
-                            <label for="category">Add to Category:</label>
-                            <select id="category" name="category_id">
+                        <div class="form-group border border-light rounded" id="addbookform">
+                            <label for="category"  class="form-label">Add to Category:</label>
+                            <select id="category" name="category_id" class="form-control">
                             {% for category in categories %}
                             <option value="{{category.id}}">{{category.name}}</option>
                             {% endfor %}
@@ -44,7 +44,7 @@
                             <input type="hidden" name="title" value="{{title}}">
                             <input type="hidden" name="isbn" value="{{isbn}}">
                             <div class="padding-bottom"></div>
-                            <button type="submit" class="btn btn-success" id="submit" type="submit">
+                            <button type="submit" class="btn btn-success formbutton" id="submit" type="submit">
                             Add Book</button>
                         </div>
                     </form>
@@ -53,6 +53,12 @@
         </div>
         <div class="col-md-6 col-md-offset-1 padding-top">
             <p>{{ description }}</p>
+        </div>
+        <div class="col-md-4 padding-top"></div>
+        <div class="col-md-2 padding-top backlink">
+            <script>
+                document.write('<a href="' + document.referrer + '">Back to Search</a>');
+            </script>
         </div>
 	</div>
 {% endblock %}

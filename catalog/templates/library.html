@@ -1,6 +1,7 @@
 {% extends "main.html" %}
 {% block title %}Categories{% endblock %}
 {% block content %}
+{% include 'header.html' %}
 <div class="row banner">
     <div class="col-md-1 col-md-offset-1 padding-none"></div>
 
@@ -15,16 +16,7 @@
         {% endif %}
     </div>
 
-    <div class="col-md-2 col-md-offset-1 padding-none">
-            {% if name %}
-            <figure class="user">
-                <img class="creator_img" src="{{ picture }}">
-                <figcaption>{{ name }} <a href="{{url_for('gdisconnect')}}">Logout</a></figcaption>
-            </figure>
-            {% else %}
-            <a href="{{url_for('showLogin')}}" class="btn btn-primary">Login</a>
-            {% endif %}
-    </div>
+    <div class="col-md-2 col-md-offset-1 padding-none"></div>
 </div>
 
 <div class = 'row flash'>

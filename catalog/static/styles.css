@@ -8,8 +8,12 @@ body {
 	background: #f7f7f7;
 }
 
+.header {
+	padding-top: 10px;
+}
+
 .banner {
-    padding: 20px;
+	padding-bottom: 20px;
 }
 
 .books {

@@ -1,16 +1,18 @@
 {% extends "main.html" %}
 {% block title %}Delete Book{% endblock %}
 {% block content %}
-
-<div class="banner">
-	<h2> Are you sure you want to delete '{{book.title}}'? </h2>
-	<form action="#" method = 'post'>
-		<button type="submit" class="btn btn-danger delete" id="submit" type="submit">
-		Delete</button>
-		<a href = "{{url_for('showBooks', category_id=book.category.id)}}" class="btn btn-secondary">
-			Cancel
-		</a>
-	</form>
+{% include 'header.html' %}
+<div class="banner row">
+	<div class="col-md-10">
+		<h2> Are you sure you want to delete '{{book.title}}'? </h2>
+		<form action="#" method = 'post'>
+			<button type="submit" class="btn btn-danger formbutton" id="submit" type="submit">
+			Delete</button>
+			<a href = "{{url_for('showBooks', category_id=book.category.id)}}" class="btn btn-secondary formbutton">
+				Cancel
+			</a>
+		</form>
+	</div>
 </div>
 
 {% endblock %}

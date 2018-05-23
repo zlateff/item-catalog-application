@@ -1,21 +1,13 @@
 {% extends "main.html" %}
 {% block title %}Search{% endblock %}
 {% block content %}
+{% include 'header.html' %}
 	<div class="row banner book">
 		<div class="col-md-10 col-md-offset-1 padding-none">
             <h1>Search for a new book</h1>
         </div>
         
-		<div class="col-md-2 col-md-offset-1 padding-none">
-            {% if name %}
-                <figure class="creator">
-                    <img class="creator_img" src="{{ picture }}">
-                    <figcaption>{{ name }} <a href="{{url_for('gdisconnect')}}">Logout</a></figcaption>
-                </figure>
-            {% else %}
-                <a href="{{url_for('showLogin')}}" class="btn btn-primary">Login</a>
-            {% endif %}
-		</div>
+		<div class="col-md-2 col-md-offset-1 padding-none"></div>
     </div>
         
 	<div class="row book-search">

@@ -30,14 +30,6 @@
                         {% endfor %}
                     </div>
                 </li>
-                <li class="nav-item">
-                    {% if not name %}
-                    <a class="nav-link" href="{{url_for('showLogin')}}">Login</a>
-                    {% endif %}
-                    {% if name %}
-                    <a class="nav-link" href="{{url_for('gdisconnect')}}">Logout</a>
-                    {% endif %}
-                </li>
                 </ul>
                 <form class="form-inline my-2 my-lg-0" action="{{ url_for('searchResults')}}">
                 <input class="form-control mr-sm-2" type="search" name="search" placeholder="Book Title or ISBN" aria-label="Search">

@@ -1,0 +1,14 @@
+<div class="row">
+    <div class="col-md-10"></div>
+
+    <div class="col-md-2 header">
+        {% if name %}
+            <figure class="user">
+                <img class="creator_img" src="{{ picture }}">
+                <figcaption>{{ name }} <a href="{{url_for('gdisconnect')}}">Logout</a></figcaption>
+            </figure>
+        {% else %}
+            <a href="{{url_for('showLogin')}}" class="btn btn-primary">Login</a>
+        {% endif %}
+    </div>
+</div>

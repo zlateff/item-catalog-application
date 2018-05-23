@@ -1,7 +1,8 @@
 {% extends "main.html" %}
 {% block title %}Edit Category{% endblock %}
 {% block content %}
-<div class="row banner menu">
+{% include 'header.html' %}
+<div class="row banner">
 	<div class="col-md-11 col-md-offset-1 padding-none">
 		<h1>Edit {{category.name}}</h1>
 	</div>
@@ -14,10 +15,10 @@
 				<label for="name">Name:</label>
 				<input type ="text" class="form-control" name="name" value="{{category.name }}">
 				<div class="padding-bottom"></div>
-				<button type="submit" class="btn btn-primary" id="submit" type="submit">
+				<button type="submit" class="btn btn-primary formbutton" id="submit" type="submit">
 				Save
 				</button>
-				<a href = "{{url_for('showBooks',category_id = category.id)}}" class="btn btn-secondary">
+				<a href = "{{url_for('showBooks',category_id = category.id)}}" class="btn btn-secondary formbutton">
 					Cancel
 				</a>
 			</div>

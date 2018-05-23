@@ -1,6 +1,7 @@
 {% extends "main.html" %}
 {% block title %}New Category{% endblock %}
 {% block content %}
+{% include 'header.html' %}
 	<div class="row banner menu">
 		<div class="col-md-11 col-md-offset-1 padding-none">
 			<h1>New Category</h1>
@@ -14,7 +15,7 @@
 					<label for="name">Name:</label>
 					<input type ="text" class="form-control" maxlength="100" name="name">
 					<div class="padding-bottom"></div>
-					<button type="submit" class="btn btn-success" id="submit" type="submit">
+					<button type="submit" class="btn btn-success formbutton" id="submit" type="submit">
 					<span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span>Create</button>
 				</div>
 			</form>

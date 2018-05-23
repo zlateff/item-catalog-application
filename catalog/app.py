@@ -248,11 +248,14 @@ def newCategory():
             name=request.form['name'].capitalize(),
             user_id=login_session['user_id'])
         session.add(newCategory)
-        flash('New Category %s Successfully Created' % newCategory.name)
+        flash("New Category '%s' Successfully Created" % newCategory.name)
         session.commit()
         return redirect(url_for('showCategories'))
     else:
-        return render_template('newCategory.html')
+        categories = session.query(Category).order_by(asc(Category.name))
+        return render_template('newCategory.html', categories=categories,
+                               name=login_session['username'],
+                               picture=login_session['picture'])
 
 
 # Edit a category
@@ -268,12 +271,13 @@ def editCategory(category_id):
     if request.method == 'POST':
         if request.form['name']:
             editedCategory.name = request.form['name'].capitalize()
-            flash('Category Successfully Edited %s' % editedCategory.name)
+            flash("Category '%s' successfully edited." % editedCategory.name)
             return redirect(url_for('showBooks', category_id=category_id))
     else:
         return render_template('editCategory.html', category=editedCategory,
                                categories=categories,
-                               name=login_session['username'])
+                               name=login_session['username'],
+                               picture=login_session['picture'])
 
 
 # Delete a category
@@ -291,19 +295,21 @@ def deleteCategory(category_id):
     numbooks = session.query(Book).filter_by(
         category_id=category_id).count()
     if numbooks > 0:
-        flash('Cannot Delete Category with books in it! \n \
-              Delete all books in %s category first.' % categoryToDelete.name)
+        flash("Cannot delete category with books in it! "
+              "Delete all books in '%s' category first."
+              % categoryToDelete.name)
         return redirect(url_for('showBooks', category_id=category_id))
     if request.method == 'POST':
         session.delete(categoryToDelete)
-        flash("'%s' successfully deleted." % categoryToDelete.name)
+        flash("Category '%s' successfully deleted." % categoryToDelete.name)
         session.commit()
         return redirect(url_for('showCategories'))
     else:
         return render_template('deleteCategory.html',
                                category=categoryToDelete,
                                categories=categories,
-                               name=login_session['username'])
+                               name=login_session['username'],
+                               picture=login_session['picture'])
 
 
 # Show books
@@ -330,7 +336,10 @@ def showBooks(category_id):
 @app.route('/category/<int:category_id>/books/<int:book_id>/')
 def previewBook(category_id, book_id):
     categories = session.query(Category).order_by(asc(Category.name))
-    book = session.query(Book).filter_by(id=book_id).one()
+    book = session.query(Book).filter_by(id=book_id).first()
+    if book is None:
+        flash("There is no book with that ID.")
+        return redirect(url_for('showCategories'))
     creator = getUserInfo(book.user_id)
     url = ("https://www.googleapis.com/books/v1/volumes?q=id:{0}"
            "&key=AIzaSyA5hoxGZWezMMVz1eM-lGHy4-qDgeW4NDY".format(book.isbn))
@@ -353,12 +362,12 @@ def previewBook(category_id, book_id):
         else:
             description = 'No Description available for this book.'
         if 'username' not in login_session:
-            return render_template('previewBook.html', title=title,
+            return render_template('previewBook.html', book=book,
                                    cover=cover,
                                    authors=authors, description=description,
                                    creator=creator, categories=categories)
         else:
-            return render_template('previewBook.html', title=title,
+            return render_template('previewBook.html', book=book,
                                    cover=cover,
                                    authors=authors, description=description,
                                    picture=login_session['picture'],
@@ -366,7 +375,7 @@ def previewBook(category_id, book_id):
                                    creator=creator, categories=categories)
     else:
         flash("Cannot retrieve the information for '%s'." % book.title)
-        return redirect(url_for('showCategories', category_id=category_id))
+        return redirect(url_for('showBooks', category_id=category_id))
 
 
 # Search for a new book
@@ -474,7 +483,8 @@ def deleteBook(book_id):
     else:
         return render_template('deleteBook.html', book=bookToDelete,
                                categories=categories,
-                               name=login_session['username'])
+                               name=login_session['username'],
+                               picture=login_session['picture'])
 
 
 if __name__ == '__main__':

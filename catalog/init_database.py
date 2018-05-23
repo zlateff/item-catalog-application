@@ -20,8 +20,8 @@ session = DBSession()
 
 # Create dummy user
 User1 = User(name="Book Worm", email="lovebooks@example.com",
-             picture='https://upload.wikimedia.org/wikipedia/commons/7/7c' +
-             '/Profile_avatar_placeholder_large.png')
+             picture="https://upload.wikimedia.org/wikipedia/commons/7/7c"
+             "/Profile_avatar_placeholder_large.png")
 session.add(User1)
 session.commit()
 
@@ -57,8 +57,8 @@ category3 = Category(user_id=1, name="Inspirational")
 session.add(category3)
 session.commit()
 
-book3 = Book(user_id=1, title="The Subtle Art of Not Giving a F*ck: \
-             A Counterintuitive Approach to Living a Good Life",
+book3 = Book(user_id=1, title="The Subtle Art of Not Giving a F*ck: "
+             "A Counterintuitive Approach to Living a Good Life",
              isbn="9780062457738", category=category3)
 
 session.add(book3)
@@ -70,8 +70,8 @@ category4 = Category(user_id=1, name="Programming")
 session.add(category4)
 session.commit()
 
-book4 = Book(user_id=1, title="Test-Driven Development with Python: \
-             Obey the Testing Goat: Using Django, Selenium, and JavaScript",
+book4 = Book(user_id=1, title="Test-Driven Development with Python: "
+             "Obey the Testing Goat: Using Django, Selenium, and JavaScript",
              isbn="9781491958674", category=category4)
 
 session.add(book4)
@@ -83,8 +83,8 @@ category5 = Category(user_id=1, name="Biography")
 session.add(category5)
 session.commit()
 
-book5 = Book(user_id=1, title="Elon Musk: \
-             Tesla, SpaceX, and the Quest for a Fantastic Future",
+book5 = Book(user_id=1, title="Elon Musk: "
+             "Tesla, SpaceX, and the Quest for a Fantastic Future",
              isbn="9780062301260", category=category5)
 
 session.add(book5)

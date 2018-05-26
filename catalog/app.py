@@ -342,7 +342,7 @@ def previewBook(category_id, book_id):
         return redirect(url_for('showCategories'))
     creator = getUserInfo(book.user_id)
     url = ("https://www.googleapis.com/books/v1/volumes?q=id:{0}"
-           "&key=AIzaSyA5hoxGZWezMMVz1eM-lGHy4-qDgeW4NDY".format(book.isbn))
+           "&key=YOUR-API-KEY".format(book.isbn))
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
     if result['items']:
@@ -387,8 +387,8 @@ def searchResults():
         entry = ''
     categories = session.query(Category).order_by(asc(Category.name))
     url = ("https://www.googleapis.com/books/v1/volumes?q={0}"
-           "&key=AIzaSyA5hoxGZWezMMVz1eM"
-           "-lGHy4-qDgeW4NDY".format(urllib.quote(entry, safe='')))
+           "&key="
+           "YOUR-API-KEY".format(urllib.quote(entry, safe='')))
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
     if 'error' in result or result['totalItems'] < 1:
@@ -420,7 +420,7 @@ def newBook(isbn):
                         category_id=request.form['category_id']))
     else:
         url = ("https://www.googleapis.com/books/v1/volumes?q=isbn:{0}"
-               "&key=AIzaSyA5hoxGZWezMMVz1eM-lGHy4-qDgeW4NDY".format(isbn))
+               "&key=YOUR-API-KEY".format(isbn))
         h = httplib2.Http()
         result = json.loads(h.request(url, 'GET')[1])
         if 'error' in result or result['totalItems'] < 1:

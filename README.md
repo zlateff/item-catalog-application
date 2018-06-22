@@ -1,6 +1,7 @@
 # Item Catalog Application
 
 This is a [Udacity FSND](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004) project.
+The live demo can be accessed at: [http://ec2-18-222-81-58.us-east-2.compute.amazonaws.com](http://ec2-18-222-81-58.us-east-2.compute.amazonaws.com)
 
 ## About
 

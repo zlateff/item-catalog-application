@@ -18,15 +18,19 @@ import json
 from flask import make_response
 import requests
 
-app = Flask(__name__)
 
-CLIENT_ID = json.loads(
-    open('client_secrets.json', 'r').read())['web']['client_id']
+PROJECT_ROOT = os.path.realpath(os.path.dirname(__file__))
+json_url = os.path.join(PROJECT_ROOT, 'client_secrets.json')
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'super-secret-key'
+
+CLIENT_ID = json.load(open(json_url))['web']['client_id']
 APPLICATION_NAME = "Library App"
 
 
 # Connect to Database and create database session
-engine = create_engine('sqlite:///library.db')
+engine = create_engine('postgresql://catalog:<password>@localhost/library')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -55,7 +59,7 @@ def gconnect():
 
     try:
         # Upgrade the authorization code into a credentials object
-        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets(json_url, scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -342,7 +346,7 @@ def previewBook(category_id, book_id):
         return redirect(url_for('showCategories'))
     creator = getUserInfo(book.user_id)
     url = ("https://www.googleapis.com/books/v1/volumes?q=id:{0}"
-           "&key=YOUR-API-KEY".format(book.isbn))
+           "&key=AIzaSyCUq7LzPk_JZ03hGnD30gtvGx3dfHdc6BY".format(book.isbn))
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
     if result['items']:
@@ -388,7 +392,7 @@ def searchResults():
     categories = session.query(Category).order_by(asc(Category.name))
     url = ("https://www.googleapis.com/books/v1/volumes?q={0}"
            "&key="
-           "YOUR-API-KEY".format(urllib.quote(entry, safe='')))
+           "AIzaSyCUq7LzPk_JZ03hGnD30gtvGx3dfHdc6BY".format(urllib.quote(entry, safe='')))
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
     if 'error' in result or result['totalItems'] < 1:
@@ -420,7 +424,7 @@ def newBook(isbn):
                         category_id=request.form['category_id']))
     else:
         url = ("https://www.googleapis.com/books/v1/volumes?q=isbn:{0}"
-               "&key=YOUR-API-KEY".format(isbn))
+               "&key=AIzaSyCUq7LzPk_JZ03hGnD30gtvGx3dfHdc6BY".format(isbn))
         h = httplib2.Http()
         result = json.loads(h.request(url, 'GET')[1])
         if 'error' in result or result['totalItems'] < 1:
@@ -488,6 +492,6 @@ def deleteBook(book_id):
 
 
 if __name__ == '__main__':
-    app.secret_key = 'super_secret_key'
+    app.secret_key = 'JZ03hGnD30gtvGx3dfHdc6BY'
     app.debug = True
     app.run(host='0.0.0.0', port=8000)
